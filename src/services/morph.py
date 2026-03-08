@@ -3,8 +3,10 @@ import re
 import shutil
 import subprocess
 import xml.etree.ElementTree as ET
+from typing import List, Dict
 
 import requests
+
 from src.config import Config
 
 SKIP_DIRS = {".git", "node_modules", "__pycache__", ".venv"}
@@ -17,7 +19,7 @@ class Morph:
     def __init__(self):
         self.api_key = Config().get_morph_api_key()
 
-    def search(self, project_path: str, query: str) -> list[dict]:
+    def search(self, project_path: str, query: str) -> List[Dict]:
         if not self.api_key:
             return []
         tree = Morph._file_tree(project_path)
@@ -97,8 +99,8 @@ class Morph:
     @staticmethod
     def _read_file(path, line_ranges=""):
         try:
-            with open(path, "r", errors="ignore") as fh:
-                lines = fh.readlines()
+            with open(path, "r", errors="ignore") as f:
+                lines = f.readlines()
         except Exception as exc:
             return f"Error reading file: {exc}"
         if not line_ranges:
@@ -162,8 +164,8 @@ class Morph:
             if not valid_path:
                 continue
             try:
-                with open(valid_path, "r", errors="ignore") as fh:
-                    results.append({"filename": valid_path, "code": fh.read()})
+                with open(valid_path, "r", errors="ignore") as f:
+                    results.append({"filename": valid_path, "code": f.read()})
             except Exception:
                 continue
         return results
